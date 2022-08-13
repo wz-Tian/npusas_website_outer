@@ -4,20 +4,31 @@ CAV = {
 	DOUBLE: 2,
 	SVGNS: ""
 };
+
+//判断浏览器是否支持Float32Array函数
 CAV.Array = typeof Float32Array == "function" ? Float32Array : Array;
+
 CAV.Utils = {
 	isNumber: function(a) {
-		return !isNaN(parseFloat(a)) && isFinite(a)
+		return !isNaN(parseFloat(a)) && isFinite(a)//a是否为有限数值
 	}
 };
+
+// 通常，当浏览器供应商实现一个还没有稳定规范的新功能时（如requestAnimationFrame），
+// 会在其引擎前面加上前缀，因此不会导致其他浏览器出现问题。
+
+// -moz-     /* 火狐等使用Mozilla浏览器引擎的浏览器 */
+// -webkit-  /* Safari, 谷歌浏览器等使用Webkit引擎的浏览器 */
+// -o-       /* Opera浏览器(早期) */
+// -ms-      /* Internet Explorer (不一定) */
 (function() {
-	for (var a = 0, b = ["ms", "moz", "webkit", "o"], c = 0; c < b.length && !window.requestAnimationFrame; ++c)
-		window.requestAnimationFrame = window[b[c] + "RequestAnimationFrame"],
+	for (var a = 0, b = ["ms", "moz", "webkit", "o"], c = 0; c < b.length && !window.requestAnimationFrame; ++c){
+		window.requestAnimationFrame = window[b[c] + "RequestAnimationFrame"];
 		window.cancelAnimationFrame = window[b[c] + "CancelAnimationFrame"] || window[b[c] + "CancelRequestAnimationFrame"];
-	if (!window.requestAnimationFrame)
+	}
+	if (!window.requestAnimationFrame){
 		window.requestAnimationFrame = function(b) {
-			var c = (new Date)
-				.getTime(),
+			var c = (new Date).getTime(),//返回1970/1/1以来的毫秒数
 				f = Math.max(0, 16 - (c - a)),
 				g = window.setTimeout(function() {
 					b(c + f)
@@ -25,11 +36,14 @@ CAV.Utils = {
 			a = c + f;
 			return g
 		};
-	if (!window.cancelAnimationFrame)
+	}
+	if (!window.cancelAnimationFrame){
 		window.cancelAnimationFrame = function(a) {
 			clearTimeout(a)
 		}
+	}
 })();
+
 Math.PIM2 = Math.PI * 2;
 Math.PID2 = Math.PI / 2;
 Math.randomInRange = function(a, b) {
@@ -493,7 +507,7 @@ CAV.CanvasRenderer.prototype.render = function(a) {
 };
 
 function Victor(container, anitOut) {
-	if (!!document.createElement("canvas")
+	if (document.createElement("canvas")
 		.getContext) {
 		var t = {
 			width: 1.5,
